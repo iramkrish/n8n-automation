@@ -1,0 +1,297 @@
+{
+  "name": "LWJ n8n Newsletter",
+  "nodes": [
+    {
+      "parameters": {},
+      "name": "Start",
+      "type": "n8n-nodes-base.start",
+      "typeVersion": 1,
+      "position": [
+        240,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "path": "sign-up",
+        "responseMode": "lastNode",
+        "options": {
+          "responsePropertyName": "data"
+        }
+      },
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        460,
+        300
+      ],
+      "webhookId": "949796e9-2584-44e9-87ff-ad1c92220550"
+    },
+    {
+      "parameters": {
+        "keepOnlySet": true,
+        "values": {
+          "string": [
+            {
+              "name": "data",
+              "value": "<form method=\"GET\" action=\"https://spotty-cougar-43.hooks.n8n.cloud/webhook-test/register\">\n  <label for=\"email\">Email</label>\n  <input type=\"email\" id=\"email\" name=\"email\" />\n  <button type=\"submit\">Subscribe</button>\n</form>"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "name": "Set",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [
+        680,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "path": "register",
+        "responseMode": "lastNode",
+        "options": {
+          "responsePropertyName": "data"
+        }
+      },
+      "name": "Webhook1",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        460,
+        440
+      ],
+      "webhookId": "b870ff1b-17b1-485b-a392-122406ff8240"
+    },
+    {
+      "parameters": {
+        "keepOnlySet": true,
+        "values": {
+          "string": [
+            {
+              "name": "data",
+              "value": "<h1>Welcome to the party, pal!</h1>"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "name": "Set1",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [
+        900,
+        440
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "mail",
+        "fromEmail": "noreply@jamstackconf.com",
+        "fromName": "Learn With Jason",
+        "toEmail": "={{$json[\"query\"][\"email\"]}}",
+        "subject": "Confirm Your Email Address",
+        "contentValue": "Please verify your email address by clicking this link:\n\nhttps://spotty-cougar-43.hooks.n8n.cloud/webhook-test/verify",
+        "additionalFields": {}
+      },
+      "name": "SendGrid",
+      "type": "n8n-nodes-base.sendGrid",
+      "typeVersion": 1,
+      "position": [
+        680,
+        440
+      ],
+      "credentials": {
+        "sendGridApi": {
+          "id": "1",
+          "name": "SendGrid account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "path": "verify",
+        "responseMode": "lastNode",
+        "options": {
+          "responsePropertyName": "data"
+        }
+      },
+      "name": "Webhook2",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        460,
+        580
+      ],
+      "webhookId": "58e49786-0ddb-40a5-b6af-067c5bb8d1ec"
+    },
+    {
+      "parameters": {
+        "keepOnlySet": true,
+        "values": {
+          "string": [
+            {
+              "name": "data",
+              "value": "<h1>Verified!</h1>"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "name": "Set2",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [
+        680,
+        580
+      ]
+    },
+    {
+      "parameters": {
+        "triggerTimes": {
+          "item": [
+            {
+              "mode": "everyWeek",
+              "hour": 12,
+              "weekday": "3"
+            }
+          ]
+        }
+      },
+      "name": "Cron",
+      "type": "n8n-nodes-base.cron",
+      "typeVersion": 1,
+      "position": [
+        460,
+        740
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://www.learnwithjason.dev/api/schedule",
+        "options": {
+          "splitIntoItems": true
+        }
+      },
+      "name": "HTTP Request",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [
+        680,
+        740
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "mail",
+        "fromEmail": "noreply@jamstackconf.com",
+        "fromName": "Learn With Jason",
+        "toEmail": "jason@lengstorf.com",
+        "subject": "=New LWJ Episode Scheduled: {{$json[\"title\"]}}",
+        "contentValue": "={{$node[\"HTTP Request\"].json[\"title\"]}} (https://www.learnwithjason.dev/{{$node[\"HTTP Request\"].json[\"slug\"][\"current\"]}})\n\n{{$node[\"HTTP Request\"].json[\"description\"]}}\n\n{{new Date($node[\"HTTP Request\"].json[\"date\"]).toLocaleString()}}",
+        "additionalFields": {}
+      },
+      "name": "SendGrid1",
+      "type": "n8n-nodes-base.sendGrid",
+      "typeVersion": 1,
+      "position": [
+        900,
+        740
+      ],
+      "credentials": {
+        "sendGridApi": {
+          "id": "1",
+          "name": "SendGrid account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "path": "d1af1513-a84d-4197-973c-dc069de4a3ea",
+        "options": {}
+      },
+      "name": "Webhook3",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        1120,
+        740
+      ],
+      "webhookId": "d1af1513-a84d-4197-973c-dc069de4a3ea"
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Set",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook1": {
+      "main": [
+        [
+          {
+            "node": "SendGrid",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SendGrid": {
+      "main": [
+        [
+          {
+            "node": "Set1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook2": {
+      "main": [
+        [
+          {
+            "node": "Set2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cron": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "SendGrid1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {},
+  "id": 1
+}
